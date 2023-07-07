@@ -36,3 +36,30 @@
     transform: rotate(360deg);
   }
 }
+
+/* -------------------------------------------------------------------------------- */
+.task-button {
+  padding: 8px 16px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.completed {
+  background-color: green;
+}
+
+.in-progress {
+  background-color: blue;
+}
+
+.not-started {
+  background-color: red;
+}
+
+.task-button:hover {
+  cursor: pointer;
+  filter: brightness(70%);
+}
