@@ -1,47 +1,102 @@
-import React from "react";
+import React, { useState } from "react";
 import { BASE_URL } from "../services/helper";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
-function MyTasks({ key, title, description }) {
-  const handleButtonClick = async (field) => {
+function MyTasks({ taskId, title, description }) {
+  const [taskStatus, setTaskStatus] = useState({
+    isCompleted: "false",
+    inProgress: "false",
+    notStarted: "false",
+  });
+
+  const handleCompleted = async () => {
     try {
-      const updatedValue = [key][field] ? false : true;
-
+      setTaskStatus({
+        isCompleted: true,
+        inProgress: false,
+        notStarted: false,
+      });
       const response = await axios.put(
-        `${BASE_URL}/api/task/${key}`,
-        { [field]: updatedValue },
+        `${BASE_URL}/api/task/${taskId}`,
+        taskStatus,
         {
           withCredentials: true,
         }
       );
       console.log(response);
-      // Add your desired logic here after updating the task
+      toast.success(response.data.message);
     } catch (error) {
+      toast.error(error.response.data.message);
+      console.error(error);
+    }
+  };
+
+  const handleProgress = async () => {
+    try {
+      setTaskStatus({
+        isCompleted: false,
+        inProgress: true,
+        notStarted: false,
+      });
+      const response = await axios.put(
+        `${BASE_URL}/api/task/${taskId}`,
+        taskStatus,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response);
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(error.response.data.message);
+      console.error(error);
+    }
+  };
+
+  const handlestart = async () => {
+    try {
+      setTaskStatus({
+        isCompleted: false,
+        inProgress: false,
+        notStarted: true,
+      });
+      const response = await axios.put(
+        `${BASE_URL}/api/task/${taskId}`,
+        taskStatus,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response);
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(error.response.data.message);
       console.error(error);
     }
   };
 
   return (
-    <div className="card" style={{ width: "100%" }} key={key}>
+    <div className="card" style={{ width: "100%" }} key={taskId}>
       {/* <img className="card-img-top" src="..." alt="Card  cap" /> */}
       <div className="card-body">
         <h5 className="card-title">{title}</h5>
         <p className="card-text">{description}</p>
         <button
           className="task-button completed"
-          onClick={() => handleButtonClick("isCompleted")}
+          onClick={() => handleCompleted()}
         >
           Completed
         </button>
         <button
           className="task-button in-progress"
-          onClick={() => handleButtonClick("inProgress")}
+          onClick={() => handleProgress()}
         >
           In Progress
         </button>
         <button
           className="task-button not-started"
-          onClick={() => handleButtonClick("notStarted")}
+          onClick={() => handlestart()}
         >
           Not Started
         </button>

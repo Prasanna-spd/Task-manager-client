@@ -21,7 +21,7 @@ function Myprofile() {
       console.error(error);
     }
   };
-
+  console.log(mytasks);
   return (
     <>
       <div className="navigationbar">
@@ -32,7 +32,7 @@ function Myprofile() {
         <div className="row">
           {mytasks.map((task) => (
             <div
-              key={task.id}
+              key={task._id}
               className="col-md-12"
               style={{
                 width: "100%",
@@ -42,7 +42,7 @@ function Myprofile() {
               }}
             >
               <MyTasks
-                key={task._id}
+                taskId={task._id}
                 title={task.title}
                 description={task.description}
               />

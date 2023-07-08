@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/navbar";
+import axios from "axios";
+import { BASE_URL } from "../services/helper";
+import { toast } from "react-hot-toast";
+import DisplayProjects from "../components/displayProjects";
 
 function AddProject() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState(null);
-  const [dueTime, setDueTime] = useState("");
+  const [dueDateTime, setDueDateTime] = useState("");
   const [totalSubtasks, setTotalSubtasks] = useState(0);
+  const [projects, setProjects] = useState([]);
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
@@ -16,28 +20,61 @@ function AddProject() {
     setDescription(event.target.value);
   };
 
-  const handleDueDateChange = (event) => {
-    setDueDate(event.target.value);
+  const handleDueDateTimeChange = (event) => {
+    setDueDateTime(event.target.value);
   };
 
-  const handleDueTimeChange = (event) => {
-    setDueTime(event.target.value);
-  };
   const handleTotalSubtasksChange = (event) => {
-    setTotalSubtasks(parseInt(event.target.value));
+    const value = parseInt(event.target.value);
+    setTotalSubtasks(value >= 0 ? value : 0);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Do something with the form data (e.g., submit to a server)
-    console.log("Form submitted:", {
-      title,
-      description,
-      dueDate,
-      dueTime,
-    });
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/api/projects/newproject`,
+        {
+          title,
+          description,
+          timeDue: dueDateTime,
+          subtasks: totalSubtasks,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      console.log(response.data);
+      toast.success(response.data.message);
+      fetchProjects();
+
+      // Handle the response or redirect to a different page
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response.data.message);
+
+      // Handle the error
+    }
   };
 
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/projects/allprojects`, {
+        withCredentials: true,
+      });
+      setProjects(response.data.projects);
+      toast.success(response.data.message);
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response.data.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+  // console.log(projects);
   return (
     <>
       <div className="navigationbar">
@@ -69,23 +106,13 @@ function AddProject() {
             ></textarea>
           </div>
           <div className="form-group">
-            <label htmlFor="dueDate">Due Date</label>
+            <label htmlFor="dueDateTime">Due Date and Time</label>
             <input
-              type="date"
+              type="datetime-local"
               className="form-control"
-              id="dueDate"
-              value={dueDate}
-              onChange={handleDueDateChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="dueTime">Due Time</label>
-            <input
-              type="time"
-              className="form-control"
-              id="dueTime"
-              value={dueTime}
-              onChange={handleDueTimeChange}
+              id="dueDateTime"
+              value={dueDateTime}
+              onChange={handleDueDateTimeChange}
             />
           </div>
           <div className="form-group">
@@ -102,6 +129,32 @@ function AddProject() {
             Create Project
           </button>
         </form>
+
+        <div className="container">
+          <h2>Projects</h2>
+          <div className="row">
+            {projects.map((proj) => (
+              <div
+                key={proj._id}
+                className="col-md-12"
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  border: "1px solid #ccc",
+                  margin: "10px 0",
+                }}
+              >
+                <DisplayProjects
+                  projectId={proj._id}
+                  title={proj.title}
+                  description={proj.description}
+                  timeDue={proj.timeDue}
+                  subtasks={proj.subtasks}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </>
   );
