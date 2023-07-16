@@ -7,6 +7,7 @@ import Login from "./screens/Login";
 import Signup from "./screens/Signup";
 import { AuthoriseProvider } from "./components/contextReducer";
 import Myprofile from "./screens/Myprofile";
+import IndivisualProjects from "./screens/indivisualProjects";
 
 function App() {
   return (
@@ -19,6 +20,11 @@ function App() {
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/register" element={<Signup />} />
             <Route exact path="/myprofile" element={<Myprofile />} />
+            <Route
+              exact
+              path="/project/:projectId"
+              element={<IndivisualProjects />}
+            />
           </Routes>
         </div>
         <Toaster />
