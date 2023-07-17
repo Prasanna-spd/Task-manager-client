@@ -7,7 +7,6 @@ function MyTasks({ taskId, title, description }) {
   const [taskStatus, setTaskStatus] = useState({
     isCompleted: "false",
     inProgress: "false",
-    notStarted: "false",
   });
 
   const handleCompleted = async () => {
@@ -15,7 +14,6 @@ function MyTasks({ taskId, title, description }) {
       setTaskStatus({
         isCompleted: true,
         inProgress: false,
-        notStarted: false,
       });
       const response = await axios.put(
         `${BASE_URL}/api/task/${taskId}`,
@@ -24,7 +22,7 @@ function MyTasks({ taskId, title, description }) {
           withCredentials: true,
         }
       );
-      console.log(response);
+      console.log("response from mytask", response);
       toast.success(response.data.message);
     } catch (error) {
       toast.error(error.response.data.message);
@@ -37,29 +35,6 @@ function MyTasks({ taskId, title, description }) {
       setTaskStatus({
         isCompleted: false,
         inProgress: true,
-        notStarted: false,
-      });
-      const response = await axios.put(
-        `${BASE_URL}/api/task/${taskId}`,
-        taskStatus,
-        {
-          withCredentials: true,
-        }
-      );
-      console.log(response);
-      toast.success(response.data.message);
-    } catch (error) {
-      toast.error(error.response.data.message);
-      console.error(error);
-    }
-  };
-
-  const handlestart = async () => {
-    try {
-      setTaskStatus({
-        isCompleted: false,
-        inProgress: false,
-        notStarted: true,
       });
       const response = await axios.put(
         `${BASE_URL}/api/task/${taskId}`,
@@ -93,12 +68,6 @@ function MyTasks({ taskId, title, description }) {
           onClick={() => handleProgress()}
         >
           In Progress
-        </button>
-        <button
-          className="task-button not-started"
-          onClick={() => handlestart()}
-        >
-          Not Started
         </button>
       </div>
     </div>

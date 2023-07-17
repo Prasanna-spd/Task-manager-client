@@ -2,11 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { Bar } from "react-chartjs-2";
 import { useSelector } from "react-redux";
-import {
-  getCompleted,
-  getInprogress,
-  getNotstarted,
-} from "../features/project/projectSlice";
+import { getCompleted, getInprogress } from "../features/project/projectSlice";
 import Navbar from "../components/navbar";
 // import { Chart } from "chart.js";
 import {
@@ -19,11 +15,6 @@ import {
   Legend,
 } from "chart.js";
 
-// Register the linear scale
-// Chart.register(
-//   Chart.controllers.bar,
-//   Chart.scaleService.getScaleConstructor("linear")
-// );
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -32,24 +23,26 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-// Chart.register();
 
 function IndivisualProjects() {
   const location = useLocation();
   const projectData = location.state.projectData;
 
+  // const isCompleted = 5;
+  // const inProgress = 4;
   const isCompleted = useSelector(getCompleted);
   const inProgress = useSelector(getInprogress);
-  const notStarted = useSelector(getNotstarted);
 
-  console.log(isCompleted, inProgress, notStarted);
+  console.log(isCompleted, inProgress);
   const chartData = {
-    labels: ["Completed", "In Progress", "Not Started"],
+    labels: ["Completed", "In Progress"],
     datasets: [
       {
         label: "Project Status",
-        data: [isCompleted, inProgress, notStarted],
-        backgroundColor: ["green", "yellow", "red"],
+        data: [isCompleted, inProgress],
+        backgroundColor: ["green", "yellow"],
+        borderColor: "black", // Set the border color
+        borderWidth: 2,
       },
     ],
   };
@@ -58,7 +51,6 @@ function IndivisualProjects() {
     scales: {
       y: {
         beginAtZero: true,
-        // max: Math.max(isCompleted, inProgress, notStarted) + 1,
         max: 10,
       },
     },
@@ -76,7 +68,9 @@ function IndivisualProjects() {
       <p>Time Due: {projectData.timeDue}</p>
       <p>Subtasks: {projectData.subtasks}</p>
       Render other project data as needed */}
-        <Bar options={chartOptions} data={chartData} />
+        <div style={{ height: "40vh", width: "80vh" }}>
+          <Bar options={chartOptions} data={chartData} />
+        </div>
       </div>
     </>
   );

@@ -4,7 +4,7 @@ import { BASE_URL } from "../../services/helper.js";
 import axios from "axios";
 
 const initialState = {
-  progress: { isCompleted: 0, inProgress: 0, notStarted: 0 },
+  progress: { isCompleted: 0, inProgress: 0 },
 };
 
 export const fetchProjectProgress = createAsyncThunk(
@@ -31,8 +31,8 @@ const projectSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchProjectProgress.fulfilled, (state, action) => {
       if (action.payload) {
-        const { isCompleted, inProgress, notStarted } = action.payload;
-        state.progress = { isCompleted, inProgress, notStarted };
+        const { isCompleted, inProgress } = action.payload;
+        state.progress = { isCompleted, inProgress };
         console.log("reporting frm projectslice", state.progress);
       }
     });
@@ -42,6 +42,5 @@ const projectSlice = createSlice({
 // export const { actions: projectActions } = projectSlice.actions;
 export const getCompleted = (state) => state.progress.progress.isCompleted;
 export const getInprogress = (state) => state.progress.progress.inProgress;
-export const getNotstarted = (state) => state.progress.progress.notStarted;
 
 export default projectSlice.reducer;
